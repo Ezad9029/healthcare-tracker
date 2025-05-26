@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { AppointmentModal } from './AppointmentModal';
 import './scehdulecalendar.css';
+import AppointmentModal from './AppointementModal';
+
 
 const ScheduleCalendar = () => {
   const [modalOpen, setModalOpen] = useState(false);

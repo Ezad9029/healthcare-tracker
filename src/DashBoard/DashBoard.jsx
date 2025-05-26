@@ -3,8 +3,8 @@ import Sidebar from "../SideBar/SideBar";
 import Header from "../Header/Header";
 import "./dashboard.css";
 import { FiChevronDown } from "react-icons/fi";
-import AnatomyViewer from "../AnatmoyViewer/AnatomyViewer";
 import ScheduleCalendar from "../AppointmentSection/ScheduleCalendar"
+import AnatomyViewer from "../AnatmoyViewer/AnatomyViewer";
 
 const Dashboard = () => {
   const [selected, setSelected] = useState("This Week");
@@ -49,7 +49,7 @@ const Dashboard = () => {
         <AnatomyViewer />
       </div>
       
-      <ScheduleCalendar />  
+      <ScheduleCalendar />
     </div>
   );
 };
