@@ -1,0 +1,26 @@
+.health_card {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+.icon {
+  font-size: 32px;
+  margin-right: 12px;
+}
+.info .label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.bar_bg {
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 5px;
+  margin-top: 6px;
+}
+.bar_fill {
+  height: 6px;
+  border-radius: 5px;
+}

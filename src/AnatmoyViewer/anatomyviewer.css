@@ -1,0 +1,27 @@
+.anatomy_section {
+  position: relative;
+  width: 300px;
+}
+.anatomy_img {
+  width: 100%;
+}
+.tooltip {
+  position: absolute;
+  background-color: #fff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+.heart {
+  top: 20%;
+  right: -20%;
+  color: #fff;
+  background-color: #5A31F4;
+}
+.leg {
+  top: 65%;
+  left: -20%;
+  color: #fff;
+  background-color: #00C6FF;
+}
