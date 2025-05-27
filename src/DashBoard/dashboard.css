@@ -4,6 +4,8 @@
     display: flex;
     border-radius: 20px;
     margin:10px;
+    overflow-x:hidden;
+    overflow-y: hidden;
 }
 
 .mid_content{

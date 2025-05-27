@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import './scehdulecalendar.css';
+import React, { useState } from "react";
+import "./schedulecalendar.css";
 
-const AppointmentModal = ({ onClose }) => {
+const AppointmentModal = ({ onClose, onCreate }) => {
   const [form, setForm] = useState({
-    title: '',
-    doctor: '',
-    time: '',
-    date: '',
+    id: "",
+    appointment_name: "",
+    doctor_name: "",
+    appointment_start_time: "",
+    appointment_end_time: "",
+    appointment_date: "",
   });
 
   const handleChange = (e) => {
@@ -14,10 +16,32 @@ const AppointmentModal = ({ onClose }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting:', form);
-    onClose();
+    try {
+      const response = await fetch(
+        `https://68356dbacd78db2058c17508.mockapi.io/userOpp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to create appointment");
+      }
+
+      const data = await response.json();
+      console.log("Appointment created:", data);
+      onCreate();
+      onClose();
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      alert("Failed to create appointment.");
+    }
   };
 
   return (
@@ -27,34 +51,42 @@ const AppointmentModal = ({ onClose }) => {
         <form onSubmit={handleSubmit} className="modal_form">
           <input
             type="text"
-            name="title"
+            name="appointment_name"
             placeholder="Appointment Title"
-            value={form.title}
+            value={form.appointment_name}
             onChange={handleChange}
             required
           />
           <input
             type="text"
-            name="doctor"
+            name="doctor_name"
             placeholder="Doctor Name"
-            value={form.doctor}
+            value={form.doctor_name}
             onChange={handleChange}
             required
           />
           <input
             type="time"
-            name="time"
-            value={form.time}
+            name="appointment_start_time"
+            value={form.appointment_start_time}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="time"
+            name="appointment_end_time"
+            value={form.appointment_end_time}
             onChange={handleChange}
             required
           />
           <input
             type="date"
-            name="date"
-            value={form.date}
+            name="appointment_date"
+            value={form.appointment_date}
             onChange={handleChange}
             required
           />
+
           <div className="modal_buttons">
             <button type="button" onClick={onClose} className="cancel_btn">
               Cancel
