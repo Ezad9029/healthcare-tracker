@@ -88,6 +88,7 @@ const activitydata = {
           </div>
         </div>
 
+<div className="scrollable_div">
         <div className="anatomy_details">
           <AnatomyViewer />
 
@@ -149,6 +150,7 @@ const activitydata = {
           </div>
         ))}
       </div>
+    </div>
     </div>
       </div>
 

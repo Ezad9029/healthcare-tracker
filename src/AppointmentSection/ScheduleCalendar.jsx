@@ -1,56 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./schedulecalendar.css";
 import AppointmentModal from "./AppointementModal";
+import { RiArrowRightFill,RiArrowLeftFill } from "react-icons/ri";
 
 const ScheduleCalendar = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  // const appointments = [
-  //   {
-  //     id: 1,
-  //     title: 'Dentist',
-  //     time: '09:00-11:00',
-  //     doctor: 'Dr. Cameron Williamson',
-  //     day: 'Tuesday',
-  //     icon: '🦷',
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Physiotherapy Appointment',
-  //     time: '11:00-12:00',
-  //     doctor: 'Dr. Kevin Djones',
-  //     day: 'Thursday',
-  //     icon: '💪',
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Health checkup complete',
-  //     time: '11:00 AM',
-  //     day: 'Thursday',
-  //     icon: '💉',
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'Ophthalmologist',
-  //     time: '14:00 PM',
-  //     day: 'Thursday',
-  //     icon: '👁️',
-  //   },
-  //   {
-  //     id: 5,
-  //     title: 'Cardiologist',
-  //     time: '12:00 AM',
-  //     day: 'Saturday',
-  //     icon: '❤️',
-  //   },
-  //   {
-  //     id: 6,
-  //     title: 'Neurologist',
-  //     time: '16:00 PM',
-  //     day: 'Saturday',
-  //     icon: '🧠',
-  //   },
-  // ];
   const [selectedDate, setSelectedDate] = useState(new Date());
   const getNext7Days = () => {
     const today = new Date();
@@ -135,7 +90,8 @@ const ScheduleCalendar = () => {
   return (
     <div className="calendar_container">
       <div className="calendar_header">
-        <h2>October 2021</h2>
+        
+
         <div className="user_actions">
           <img
             src="https://i.pravatar.cc/32"
@@ -147,6 +103,18 @@ const ScheduleCalendar = () => {
           </button>
         </div>
       </div>
+
+<div className="head_calendar">
+      <h2 style={{fontSize:"16px",color:"#120a54"}}>
+          {selectedDate.toLocaleString("default", { month: "long" })}{" "}
+          {selectedDate.getFullYear()}
+        </h2>
+
+<div className="arrow_div">
+        <RiArrowLeftFill />
+        <RiArrowRightFill />
+        </div>
+        </div>
 
       <div className="calendar_days">
         {getNext7Days().map((date, i) => (
@@ -165,11 +133,14 @@ const ScheduleCalendar = () => {
         ))}
       </div>
 
+      <h3 style={{ color: " #120a54", fontWeight: "bold" }}>Today</h3>
       <div className="appointments">
         {selectedDayAppointments.length === 0 ? (
-    <p>No appointments for this day.</p>
-  ) : (selectedDayAppointments
-          .map((app) => (
+          <p style={{ margin: "auto", color: "#120a54" }}>
+            No appointments for this day.
+          </p>
+        ) : (
+          selectedDayAppointments.map((app) => (
             <div className="appointment_card" key={app.id}>
               <div className="appointment_icon">
                 {getIcon(app.appointment_name)}
@@ -194,13 +165,13 @@ const ScheduleCalendar = () => {
               </div>
             </div>
           ))
-          )}
+        )}
       </div>
 
       <h3 style={{ color: " #120a54", fontWeight: "bold" }}>
         The Upcoming Schedule
       </h3>
-      <div className="upcoming_schedule">
+      <div className="appointments">
         {upcomingSchedule.map((app) => (
           <div className="appointment_card" key={app.id}>
             <div className="appointment_icon">

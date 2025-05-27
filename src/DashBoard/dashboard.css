@@ -2,6 +2,7 @@
     width:100%;
     height: 100%;
     display: flex;
+    justify-content: space-between;
     border-radius: 20px;
     margin:10px;
     overflow-x:hidden;
@@ -10,11 +11,23 @@
 
 .mid_content{
     width:40%;
+    height: 600px;
     display: flex;
     flex-direction: column;
     gap:20px;
     background-color: #fff;
     padding: 20px 20px;
+}
+
+
+.scrollable_div{
+  display: flex;
+  flex-direction: column;
+    overflow-y: scroll;
+}
+
+.scrollable_div::-webkit-scrollbar{
+  display: none;
 }
 
 .dashboard_header{

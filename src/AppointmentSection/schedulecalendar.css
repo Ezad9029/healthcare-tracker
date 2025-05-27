@@ -1,20 +1,35 @@
 .calendar_container {
   background: #f8f9fc;
-  padding: 24px;
+  padding: 20px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   width:40%;
-  /* height: 100%; */
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.calendar_container::-webkit-scrollbar{
+  display: none;
 }
 
 .calendar_header {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
 }
 
 .calendar_header h2 {
   margin: 0;
+}
+
+.head_calendar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.arrow_div{
+  color: #120a54;
 }
 
 .user_actions {
@@ -49,7 +64,7 @@
 
 .day_name {
   font-weight: bold;
-  color: #555;
+  color: #120a54;
 }
 
 .day_date {
@@ -75,6 +90,7 @@
   flex-wrap: wrap;
   gap: 16px;
   margin-top: 20px;
+  min-height:50px;
 }
 
 .appointment_card {
