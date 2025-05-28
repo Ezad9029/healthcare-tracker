@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import "./schedulecalendar.css";
 import AppointmentModal from "./AppointementModal";
 import { RiArrowRightFill,RiArrowLeftFill } from "react-icons/ri";
+import { FaChevronDown } from "react-icons/fa";
 
 const ScheduleCalendar = () => {
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const toggleCalendar = () => {
+    setIsCalendarOpen(!isCalendarOpen);
+  };
+
+  // Close calendar when clicking overlay
+  const handleOverlayClick = (e) => {
+    if (e.target.classList.contains('calendar_overlay')) {
+      setIsCalendarOpen(false);
+    }
+  };
+
   const getNext7Days = () => {
     const today = new Date();
     return Array.from({ length: 7 }, (_, i) => {
@@ -88,59 +101,103 @@ const ScheduleCalendar = () => {
   });
 
   return (
-    <div className="calendar_container">
-      <div className="calendar_header">
-        
+    <>
 
-        <div className="user_actions">
-          <img
-            src="https://i.pravatar.cc/32"
-            alt="User"
-            className="user_avatar"
-          />
-          <button className="add_button" onClick={() => setModalOpen(true)}>
-            +
-          </button>
-        </div>
+      <div className="calendar_toggle" onClick={toggleCalendar}>
+        <FaChevronDown />
+        Calendar
       </div>
 
-<div className="head_calendar">
-      <h2 style={{fontSize:"16px",color:"#120a54"}}>
-          {selectedDate.toLocaleString("default", { month: "long" })}{" "}
-          {selectedDate.getFullYear()}
-        </h2>
 
-<div className="arrow_div">
-        <RiArrowLeftFill />
-        <RiArrowRightFill />
-        </div>
-        </div>
+      <div 
+        className={`calendar_overlay ${isCalendarOpen ? 'active' : ''}`}
+        onClick={handleOverlayClick}
+      ></div>
 
-      <div className="calendar_days">
-        {getNext7Days().map((date, i) => (
-          <div
-            key={i}
-            className={`day ${
-              isSameDate(date, selectedDate) ? "selected_day" : ""
-            }`}
-            onClick={() => setSelectedDate(date)}
-          >
-            <div className="day_name">
-              {date.toLocaleDateString("en-US", { weekday: "short" })}
-            </div>
-            <div className="day_date">{date.getDate()}</div>
+      <div className={`calendar_container ${isCalendarOpen ? 'active' : ''}`}>
+        <div className="calendar_handle"></div>
+        <div className="calendar_header">
+          <div className="user_actions">
+            <img
+              src="https://i.pravatar.cc/32"
+              alt="User"
+              className="user_avatar"
+            />
+            <button className="add_button" onClick={() => setModalOpen(true)}>
+              +
+            </button>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <h3 style={{ color: " #120a54", fontWeight: "bold" }}>Today</h3>
-      <div className="appointments">
-        {selectedDayAppointments.length === 0 ? (
-          <p style={{ margin: "auto", color: "#120a54" }}>
-            No appointments for this day.
-          </p>
-        ) : (
-          selectedDayAppointments.map((app) => (
+        <div className="head_calendar">
+          <h2 style={{fontSize:"16px",color:"#120a54"}}>
+            {selectedDate.toLocaleString("default", { month: "long" })}{" "}
+            {selectedDate.getFullYear()}
+          </h2>
+
+          <div className="arrow_div">
+            <RiArrowLeftFill />
+            <RiArrowRightFill />
+          </div>
+        </div>
+
+        <div className="calendar_days">
+          {getNext7Days().map((date, i) => (
+            <div
+              key={i}
+              className={`day ${
+                isSameDate(date, selectedDate) ? "selected_day" : ""
+              }`}
+              onClick={() => setSelectedDate(date)}
+            >
+              <div className="day_name">
+                {date.toLocaleDateString("en-US", { weekday: "short" })}
+              </div>
+              <div className="day_date">{date.getDate()}</div>
+            </div>
+          ))}
+        </div>
+
+        <h3 style={{ color: " #120a54", fontWeight: "bold" }}>Today</h3>
+        <div className="appointments">
+          {selectedDayAppointments.length === 0 ? (
+            <p style={{ margin: "auto", color: "#120a54" }}>
+              No appointments for this day.
+            </p>
+          ) : (
+            selectedDayAppointments.map((app) => (
+              <div className="appointment_card" key={app.id}>
+                <div className="appointment_icon">
+                  {getIcon(app.appointment_name)}
+                </div>
+                <div className="appointment_info">
+                  <div className="appointment_title">{app.appointment_name}</div>
+                  <div className="appointment_time">
+                    {app.appointment_start_time} - {app.appointment_end_time} on{" "}
+                    {app.appointment_date}
+                  </div>
+                  {app.doctor_name && (
+                    <div className="appointment_doctor">
+                      Dr. {app.doctor_name}
+                    </div>
+                  )}
+                  <button
+                    className="delete_button"
+                    onClick={() => handleDelete(app.id)}
+                  >
+                    ❌
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <h3 style={{ color: " #120a54", fontWeight: "bold" }}>
+          The Upcoming Schedule
+        </h3>
+        <div className="appointments">
+          {upcomingSchedule.map((app) => (
             <div className="appointment_card" key={app.id}>
               <div className="appointment_icon">
                 {getIcon(app.appointment_name)}
@@ -152,9 +209,7 @@ const ScheduleCalendar = () => {
                   {app.appointment_date}
                 </div>
                 {app.doctor_name && (
-                  <div className="appointment_doctor">
-                    Dr. {app.doctor_name}
-                  </div>
+                  <div className="appointment_doctor">Dr. {app.doctor_name}</div>
                 )}
                 <button
                   className="delete_button"
@@ -164,46 +219,17 @@ const ScheduleCalendar = () => {
                 </button>
               </div>
             </div>
-          ))
+          ))}
+        </div>
+
+        {modalOpen && (
+          <AppointmentModal
+            onClose={() => setModalOpen(false)}
+            onCreate={fetchAppointments}
+          />
         )}
       </div>
-
-      <h3 style={{ color: " #120a54", fontWeight: "bold" }}>
-        The Upcoming Schedule
-      </h3>
-      <div className="appointments">
-        {upcomingSchedule.map((app) => (
-          <div className="appointment_card" key={app.id}>
-            <div className="appointment_icon">
-              {getIcon(app.appointment_name)}
-            </div>
-            <div className="appointment_info">
-              <div className="appointment_title">{app.appointment_name}</div>
-              <div className="appointment_time">
-                {app.appointment_start_time} - {app.appointment_end_time} on{" "}
-                {app.appointment_date}
-              </div>
-              {app.doctor_name && (
-                <div className="appointment_doctor">Dr. {app.doctor_name}</div>
-              )}
-              <button
-                className="delete_button"
-                onClick={() => handleDelete(app.id)}
-              >
-                ❌
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {modalOpen && (
-        <AppointmentModal
-          onClose={() => setModalOpen(false)}
-          onCreate={fetchAppointments}
-        />
-      )}
-    </div>
+    </>
   );
 };
 

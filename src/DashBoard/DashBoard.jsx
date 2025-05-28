@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../SideBar/SideBar";
 import Header from "../Header/Header";
 import "./dashboard.css";
@@ -10,12 +10,34 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 const Dashboard = () => {
   const [selected, setSelected] = useState("This Week");
   const [open, setOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const options = ["This Week", "This Month", "This Year"];
 
   const handleSelect = (option) => {
     setSelected(option);
     setOpen(false);
   };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && 
+          !event.target.closest('.side_bar') && 
+          !event.target.closest('.hamburger_menu') &&
+          window.innerWidth < 768) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const healthChecks = [
   {
@@ -59,9 +81,9 @@ const activitydata = {
 
   return (
     <div className="dashboard_container">
-      <Sidebar />
+      <Sidebar isOpen={isMenuOpen} />
       <div className="mid_content">
-        <Header />
+        <Header isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
         <div className="dashboard_header">
           <h1>Dashboard</h1>
           <div className="time_filter">

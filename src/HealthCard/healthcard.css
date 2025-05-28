@@ -24,3 +24,39 @@
   height: 6px;
   border-radius: 5px;
 }
+
+/* Responsive Health Card */
+@media screen and (max-width: 768px) {
+  .health_card {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .icon {
+    font-size: 28px;
+    margin-right: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .health_card {
+    padding: 10px;
+    margin-bottom: 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .icon {
+    font-size: 24px;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .info {
+    width: 100%;
+  }
+
+  .bar_bg {
+    margin-top: 8px;
+  }
+}

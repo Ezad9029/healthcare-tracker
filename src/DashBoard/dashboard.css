@@ -205,3 +205,74 @@
   color: #999;
   margin-top: 4px;
 }
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .dashboard_container {
+    flex-direction: column;
+    margin: 5px;
+    gap: 20px;
+  }
+
+  .mid_content {
+    width: 100%;
+    height: auto;
+    min-height: 400px;
+  }
+
+  .health_check_container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .health_card {
+    width: calc(50% - 1rem);
+    min-width: 200px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard_header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dashboard_header h1 {
+    font-size: 1.5rem;
+  }
+
+  .activity_container {
+    padding: 12px;
+  }
+
+  .activity_chart {
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .activity_day {
+    min-width: 40px;
+  }
+
+  .health_card {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .anatomy_details {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .anatomy_details_right {
+    align-items: flex-start;
+  }
+
+  .time_filter_options {
+    right: -50%;
+  }
+}

@@ -11,3 +11,27 @@ html,body{
   width: 100%;
   height:100%;
 }
+
+/* Responsive Base Styles */
+@media screen and (max-width: 768px) {
+  html, body {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  html, body {
+    font-size: 12px;
+  }
+}
+
+/* Utility Classes for Responsive Design */
+.hide-on-mobile {
+  display: initial;
+}
+
+@media screen and (max-width: 768px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
