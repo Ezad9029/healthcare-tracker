@@ -11,6 +11,7 @@ const Dashboard = () => {
   const [selected, setSelected] = useState("This Week");
   const [open, setOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const options = ["This Week", "This Month", "This Year"];
 
   const handleSelect = (option) => {
@@ -19,7 +20,11 @@ const Dashboard = () => {
   };
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    if (window.innerWidth > 1024) {
+      setIsCollapsed(!isCollapsed);
+    } else {
+      setIsMenuOpen(!isMenuOpen);
+    }
   };
 
 
@@ -81,7 +86,7 @@ const activitydata = {
 
   return (
     <div className="dashboard_container">
-      <Sidebar isOpen={isMenuOpen} />
+      <Sidebar isOpen={isMenuOpen} isCollapsed={isCollapsed} />
       <div className="mid_content">
         <Header isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
         <div className="dashboard_header">

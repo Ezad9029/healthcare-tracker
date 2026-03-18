@@ -5,11 +5,11 @@ import {
   FaChartBar, FaComments, FaPhoneAlt, FaCog
 } from 'react-icons/fa';
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isOpen, isCollapsed }) => {
   return (
     <>
-      <div className={`overlay ${isOpen ? 'active' : ''}`}></div>
-      <div className={`side_bar ${isOpen ? 'active' : ''}`}>
+      <div className={`sidebar_overlay ${isOpen ? 'active' : ''}`}></div>
+      <div className={`side_bar ${isOpen ? 'active' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
         <h2 className="logo">
           <span className="text_cyan">Health</span><span className="text_dark">care.</span>
         </h2>

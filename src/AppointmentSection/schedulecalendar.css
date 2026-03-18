@@ -3,13 +3,14 @@
   padding: 20px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
-  width:40%;
-  height: 600px;
-  overflow-y: scroll;
+  width: 300px;
+  min-width: 300px;
+  min-height: 100vh;
+  overflow-y: auto;
   transition: transform 0.3s ease-in-out;
 }
 
-.calendar_container::-webkit-scrollbar{
+.calendar_container::-webkit-scrollbar {
   display: none;
 }
 

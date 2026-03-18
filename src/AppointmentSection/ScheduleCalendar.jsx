@@ -4,7 +4,7 @@ import AppointmentModal from "./AppointementModal";
 import { RiArrowRightFill,RiArrowLeftFill } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa";
 
-const ScheduleCalendar = () => {
+const ScheduleCalendar = ({ appointments = [], onRefresh = () => {} }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -31,24 +31,6 @@ const ScheduleCalendar = () => {
 
   const isSameDate = (date1, date2) =>
     date1.toDateString() === date2.toDateString();
-
-  const [appointments, setAppointments] = useState([]);
-
-  const fetchAppointments = async () => {
-    try {
-      const res = await fetch(
-        `https://68356dbacd78db2058c17508.mockapi.io/userOpp`
-      );
-      const data = await res.json();
-      setAppointments(data);
-    } catch (err) {
-      console.error("Failed to fetch appointments", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
 
   const getIcon = (title) => {
     if (title.toLowerCase().includes("dentist")) return "🦷";
@@ -81,7 +63,7 @@ const ScheduleCalendar = () => {
         throw new Error("Failed to delete appointment");
       }
 
-      fetchAppointments();
+      onRefresh();
     } catch (err) {
       console.error("Delete failed:", err);
       alert("Could not delete the appointment.");
@@ -225,7 +207,7 @@ const ScheduleCalendar = () => {
         {modalOpen && (
           <AppointmentModal
             onClose={() => setModalOpen(false)}
-            onCreate={fetchAppointments}
+            onCreate={onRefresh}
           />
         )}
       </div>

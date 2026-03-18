@@ -14,10 +14,11 @@
 }
 
 .hamburger_menu {
-  display: none;
+  display: block;
   font-size: 24px;
   color: #120a54;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .search_container {
@@ -61,10 +62,6 @@
 
 
 @media screen and (max-width: 1024px) {
-  .hamburger_menu {
-    display: block;
-  }
-
   .search_container {
     width: 100%;
     max-width: 400px;
