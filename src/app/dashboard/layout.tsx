@@ -1,0 +1,67 @@
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleMenu = () => {
+    if (window.innerWidth > 1024) {
+      setIsCollapsed(!isCollapsed);
+    } else {
+      setIsMenuOpen(!isMenuOpen);
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="loading_page">
+        <div className="spinner" />
+        Loading...
+      </div>
+    );
+  }
+
+  if (!session) return null;
+
+  return (
+    <div className="app_layout">
+      <Sidebar isOpen={isMenuOpen} isCollapsed={isCollapsed} />
+      <div className={`main_area ${isCollapsed ? "sidebar_collapsed" : ""}`}>
+        <Header
+          isMenuOpen={isMenuOpen}
+          isCollapsed={isCollapsed}
+          toggleMenu={toggleMenu}
+        />
+        <main className="main_content">{children}</main>
+      </div>
+    </div>
+  );
+}
