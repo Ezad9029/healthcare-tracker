@@ -111,6 +111,4 @@ prisma/
 └── seed.ts               # Database seeder
 ```
 
-## License
 
-MIT
