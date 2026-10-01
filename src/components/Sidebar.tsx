@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaThLarge, FaHistory, FaCalendarAlt, FaClipboardList,
   FaChartBar, FaComments, FaPhoneAlt, FaCog, FaSignOutAlt,
@@ -12,17 +13,56 @@ interface SidebarProps {
   isCollapsed: boolean;
 }
 
+interface NavItem {
+  icon: React.ReactNode;
+  label: string;
+  href?: string;
+  active?: boolean;
+}
+
 export default function Sidebar({ isOpen, isCollapsed }: SidebarProps) {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
   const role = (session?.user as { role?: string })?.role;
   const isAdmin = role === "admin";
   const isDoctor = role === "doctor";
+
+  const generalNav: NavItem[] = [
+    { icon: <FaThLarge />, label: "Dashboard", href: "/dashboard", active: pathname === "/dashboard" },
+    { icon: <FaHistory />, label: "History", href: "/dashboard" },
+    { icon: <FaCalendarAlt />, label: "Calendar", href: "/dashboard" },
+    { icon: <FaClipboardList />, label: "Appointments", href: "/dashboard" },
+    { icon: <FaChartBar />, label: "Statistics", href: "/dashboard" },
+  ];
+
+  const toolsNav: NavItem[] = [
+    { icon: <FaComments />, label: "Chat", href: "/dashboard" },
+    { icon: <FaPhoneAlt />, label: "Support", href: "/dashboard" },
+  ];
+
+  const handleNavClick = (item: NavItem) => {
+    if (item.href) {
+      router.push(item.href);
+    }
+  };
+
+  const renderNavItem = (item: NavItem, key: string) => (
+    <li
+      key={key}
+      className={`nav_item ${item.active ? "active" : ""}`}
+      style={{ cursor: item.href ? "pointer" : "default" }}
+      onClick={() => handleNavClick(item)}
+    >
+      {item.icon} <span>{item.label}</span>
+    </li>
+  );
 
   return (
     <>
       <div className={`sidebar_overlay ${isOpen ? "active" : ""}`} />
       <nav className={`sidebar ${isOpen ? "mobile_open" : ""} ${isCollapsed ? "collapsed" : ""}`}>
-        <div className="logo">
+        <div className="logo" style={{ cursor: "pointer" }} onClick={() => router.push("/dashboard")}>
           <span className="text_cyan">Health</span>
           <span className="text_dark">care.</span>
         </div>
@@ -30,33 +70,14 @@ export default function Sidebar({ isOpen, isCollapsed }: SidebarProps) {
         <div className="nav_section">
           <p className="section_label">General</p>
           <ul className="nav_list">
-            <li className="nav_item active">
-              <FaThLarge /> <span>Dashboard</span>
-            </li>
-            <li className="nav_item">
-              <FaHistory /> <span>History</span>
-            </li>
-            <li className="nav_item">
-              <FaCalendarAlt /> <span>Calendar</span>
-            </li>
-            <li className="nav_item">
-              <FaClipboardList /> <span>Appointments</span>
-            </li>
-            <li className="nav_item">
-              <FaChartBar /> <span>Statistics</span>
-            </li>
+            {generalNav.map((item, i) => renderNavItem(item, `general-${i}`))}
           </ul>
         </div>
 
         <div className="nav_section">
           <p className="section_label">Tools</p>
           <ul className="nav_list">
-            <li className="nav_item">
-              <FaComments /> <span>Chat</span>
-            </li>
-            <li className="nav_item">
-              <FaPhoneAlt /> <span>Support</span>
-            </li>
+            {toolsNav.map((item, i) => renderNavItem(item, `tools-${i}`))}
           </ul>
         </div>
 
@@ -64,7 +85,11 @@ export default function Sidebar({ isOpen, isCollapsed }: SidebarProps) {
           <div className="nav_section">
             <p className="section_label">Doctor</p>
             <ul className="nav_list">
-              <li className="nav_item" style={{ cursor: "pointer" }} onClick={() => window.location.href = "/doctor"}>
+              <li
+                className={`nav_item ${pathname === "/doctor" ? "active" : ""}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => router.push("/doctor")}
+              >
                 <FaUserMd /> <span>My Patients</span>
               </li>
             </ul>
@@ -75,7 +100,11 @@ export default function Sidebar({ isOpen, isCollapsed }: SidebarProps) {
           <div className="nav_section">
             <p className="section_label">Administration</p>
             <ul className="nav_list">
-              <li className="nav_item" style={{ cursor: "pointer" }} onClick={() => window.location.href = "/admin"}>
+              <li
+                className={`nav_item ${pathname === "/admin" ? "active" : ""}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => router.push("/admin")}
+              >
                 <FaUserShield /> <span>User Management</span>
               </li>
             </ul>
@@ -84,15 +113,29 @@ export default function Sidebar({ isOpen, isCollapsed }: SidebarProps) {
 
         <div className="nav_section">
           <ul className="nav_list">
-            <li className="nav_item" style={{ cursor: "pointer" }} onClick={() => window.location.href = "/profile"}>
+            <li
+              className={`nav_item ${pathname === "/profile" ? "active" : ""}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => router.push("/profile")}
+            >
               <FaUserCircle /> <span>My Profile</span>
             </li>
           </ul>
         </div>
 
         <div className="sidebar_footer">
-          <FaCog />
-          <span className="logout_label">Settings</span>
+          <FaCog
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/profile")}
+            title="Settings"
+          />
+          <span
+            className="logout_label"
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/profile")}
+          >
+            Settings
+          </span>
           <button onClick={() => signOut({ callbackUrl: "/login" })} title="Logout">
             <FaSignOutAlt />
           </button>

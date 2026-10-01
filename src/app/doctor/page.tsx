@@ -25,10 +25,10 @@ export default function DoctorDashboard() {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const res = await fetch("/api/doctor/appointments");
+      const res = await fetch("/api/doctor/appointments?limit=100");
       if (res.ok) {
-        const data = await res.json();
-        setAppointments(data);
+        const result = await res.json();
+        setAppointments(result.data || result);
       }
     } finally {
       setLoading(false);

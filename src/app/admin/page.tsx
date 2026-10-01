@@ -36,8 +36,11 @@ export default function AdminPage() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/users");
-      if (res.ok) setUsers(await res.json());
+      const res = await fetch("/api/admin/users?limit=100");
+      if (res.ok) {
+        const result = await res.json();
+        setUsers(result.data || result);
+      }
     } catch {
       setError("Failed to load users");
     } finally {

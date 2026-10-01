@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import AnatomyViewer from "@/components/AnatomyViewer";
 import HealthCard from "@/components/HealthCard";
 import ActivityChart from "@/components/ActivityChart";
@@ -28,7 +29,31 @@ interface Appointment {
 
 const timeOptions = ["This Week", "This Month", "This Year"];
 
+function getDateRange(filter: string): { start: Date; end: Date } {
+  const now = new Date();
+  const start = new Date(now);
+  const end = new Date(now);
+
+  switch (filter) {
+    case "This Week":
+      start.setDate(now.getDate() - now.getDay());
+      end.setDate(start.getDate() + 6);
+      break;
+    case "This Month":
+      start.setDate(1);
+      end.setMonth(now.getMonth() + 1, 0);
+      break;
+    case "This Year":
+      start.setMonth(0, 1);
+      end.setMonth(11, 31);
+      break;
+  }
+
+  return { start, end };
+}
+
 export default function DashboardPage() {
+  const router = useRouter();
   const [selected, setSelected] = useState("This Week");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [healthChecks, setHealthChecks] = useState<HealthCheck[]>([]);
@@ -36,10 +61,10 @@ export default function DashboardPage() {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      const res = await fetch("/api/appointments");
+      const res = await fetch("/api/appointments?limit=100");
       if (res.ok) {
-        const data = await res.json();
-        setAppointments(data);
+        const result = await res.json();
+        setAppointments(result.data || result);
       }
     } catch (err) {
       console.error("Failed to fetch appointments:", err);
@@ -48,10 +73,10 @@ export default function DashboardPage() {
 
   const fetchHealthChecks = useCallback(async () => {
     try {
-      const res = await fetch("/api/health-checks");
+      const res = await fetch("/api/health-checks?limit=100");
       if (res.ok) {
-        const data = await res.json();
-        setHealthChecks(data);
+        const result = await res.json();
+        setHealthChecks(result.data || result);
       }
     } catch (err) {
       console.error("Failed to fetch health checks:", err);
@@ -63,12 +88,23 @@ export default function DashboardPage() {
     fetchHealthChecks();
   }, [fetchAppointments, fetchHealthChecks]);
 
-  const weekAppointmentCount = appointments.filter((app) => {
-    const appDate = new Date(app.appointmentDate);
-    const now = new Date();
-    const diff = (appDate.getTime() - now.getTime()) / 86400000;
-    return diff >= -1 && diff <= 7;
-  }).length;
+  const filteredAppointments = useMemo(() => {
+    const { start, end } = getDateRange(selected);
+    return appointments.filter((app) => {
+      const appDate = new Date(app.appointmentDate);
+      return appDate >= start && appDate <= end;
+    });
+  }, [appointments, selected]);
+
+  const filteredHealthChecks = useMemo(() => {
+    const { start, end } = getDateRange(selected);
+    return healthChecks.filter((check) => {
+      const checkDate = new Date(check.date);
+      return checkDate >= start && checkDate <= end;
+    });
+  }, [healthChecks, selected]);
+
+  const appointmentCount = filteredAppointments.length;
 
   return (
     <div className="dashboard_page">
@@ -107,22 +143,29 @@ export default function DashboardPage() {
         <AnatomyViewer />
         <div className="anatomy_info">
           <div className="health_cards">
-            {healthChecks.length === 0 ? (
-              <p className="empty_msg">No health checks yet.</p>
+            {filteredHealthChecks.length === 0 ? (
+              <p className="empty_msg">No health checks for {selected.toLowerCase()}.</p>
             ) : (
-              healthChecks.map((check) => (
+              filteredHealthChecks.map((check) => (
                 <HealthCard key={check.id} check={check} />
               ))
             )}
           </div>
-          <span className="details_link">
+          <span
+            className="details_link"
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/profile")}
+          >
             Details →
           </span>
         </div>
       </div>
 
       {/* Activity */}
-      <ActivityChart appointmentCount={weekAppointmentCount} />
+      <ActivityChart
+        appointmentCount={appointmentCount}
+        appointments={filteredAppointments}
+      />
 
       {/* Calendar Panel */}
       <ScheduleCalendar appointments={appointments} onRefresh={fetchAppointments} />

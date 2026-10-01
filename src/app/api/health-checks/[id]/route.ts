@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
-import { appointmentUpdateSchema } from "@/lib/validation";
+import { healthCheckUpdateSchema } from "@/lib/validation";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,27 +15,25 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-    const validated = appointmentUpdateSchema.parse(body);
+    const validated = healthCheckUpdateSchema.parse(body);
 
-    const existing = await prisma.appointment.findUnique({ where: { id } });
+    const existing = await prisma.healthCheck.findUnique({ where: { id } });
     if (!existing || existing.userId !== session.user.id) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    const appointment = await prisma.appointment.update({
+    const healthCheck = await prisma.healthCheck.update({
       where: { id },
       data: {
-        ...(validated.status !== undefined && { status: validated.status }),
-        ...(validated.appointmentName !== undefined && { appointmentName: validated.appointmentName }),
-        ...(validated.doctorName !== undefined && { doctorName: validated.doctorName }),
-        ...(validated.appointmentDate !== undefined && { appointmentDate: new Date(validated.appointmentDate) }),
-        ...(validated.appointmentStartTime !== undefined && { appointmentStartTime: validated.appointmentStartTime }),
-        ...(validated.appointmentEndTime !== undefined && { appointmentEndTime: validated.appointmentEndTime }),
-        ...(validated.notes !== undefined && { notes: validated.notes }),
+        ...(validated.title !== undefined && { title: validated.title }),
+        ...(validated.icon !== undefined && { icon: validated.icon }),
+        ...(validated.date !== undefined && { date: new Date(validated.date) }),
+        ...(validated.progress !== undefined && { progress: validated.progress }),
+        ...(validated.color !== undefined && { color: validated.color }),
       },
     });
 
-    return NextResponse.json(appointment);
+    return NextResponse.json(healthCheck);
   } catch (error) {
     if (error instanceof Error && error.name === "ZodError") {
       return NextResponse.json(
@@ -43,7 +41,7 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    console.error("Failed to update appointment:", error);
+    console.error("Failed to update health check:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -60,15 +58,15 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const existing = await prisma.appointment.findUnique({ where: { id } });
+    const existing = await prisma.healthCheck.findUnique({ where: { id } });
     if (!existing || existing.userId !== session.user.id) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    await prisma.appointment.delete({ where: { id } });
+    await prisma.healthCheck.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Failed to delete appointment:", error);
+    console.error("Failed to delete health check:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
